@@ -210,6 +210,8 @@ nav {
   overflow: hidden;
   height: 100%;
   box-shadow: 0 2px 7px #432d1910;
+  display: flex;
+  flex-direction: column;
 }
 
 .product img {
@@ -221,6 +223,9 @@ nav {
 
 .product-body {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .product h3 {
@@ -232,7 +237,6 @@ nav {
 .product p {
   color: var(--muted);
   font-size: 13px;
-  min-height: 38px;
   margin-bottom: 13px;
 }
 
@@ -240,6 +244,8 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 .price {

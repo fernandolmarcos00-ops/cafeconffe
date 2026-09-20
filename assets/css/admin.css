@@ -4,6 +4,44 @@
   --cream2: #f5e8d2;
   --border: #dfe2e6;
   --muted: #87776e;
+  --primary: #a72f25;
+  --primary-dark: #8f271f;
+  --primary-darker: #7a2119;
+}
+
+/* O Bootstrap usa azul como cor "primary" por padrão — troca pra
+   cor do tema (mesmo vermelho do menu/pílula ativa) */
+.btn-primary {
+  --bs-btn-bg: var(--primary);
+  --bs-btn-border-color: var(--primary);
+  --bs-btn-hover-bg: var(--primary-dark);
+  --bs-btn-hover-border-color: var(--primary-dark);
+  --bs-btn-active-bg: var(--primary-darker);
+  --bs-btn-active-border-color: var(--primary-darker);
+  --bs-btn-disabled-bg: var(--primary);
+  --bs-btn-disabled-border-color: var(--primary);
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
+}
+
+.btn-primary:active {
+  background-color: var(--primary-darker) !important;
+  border-color: var(--primary-darker) !important;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--primary);
+  --bs-btn-border-color: var(--primary);
+  --bs-btn-hover-bg: var(--primary);
+  --bs-btn-hover-border-color: var(--primary);
+  --bs-btn-active-bg: var(--primary);
+  --bs-btn-active-border-color: var(--primary);
+  --bs-btn-active-color: #fff;
 }
 
 body {
@@ -120,17 +158,17 @@ header {
 
 .tabs button:hover {
   background: var(--cream2);
-  color: #a72f25;
+  color: var(--primary);
 }
 
 .tabs button.active {
-  background: #a72f25;
+  background: var(--primary);
   color: #fff;
   font-weight: bold;
 }
 
 .tabs button.active:hover {
-  background: #a72f25;
+  background: var(--primary);
   color: #fff;
 }
 
@@ -154,7 +192,17 @@ header {
 }
 
 .heading p {
-  margin: 3px 0;
+  margin: 3px 0 0;
+}
+
+.heading p::after {
+  content: '';
+  display: block;
+  width: 42px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 3px;
+  margin: 12px auto 0;
 }
 
 .card {
@@ -228,7 +276,7 @@ header {
 
 .prod-info b {
   font-size: 11px;
-  color: #a72f25;
+  color: var(--primary);
 }
 
 .actions {
@@ -307,7 +355,7 @@ header {
   transform: translateY(12px);
   transition: opacity .25s ease, transform .25s ease;
   max-width: 320px;
-  border-left: 4px solid #a72f25;
+  border-left: 4px solid var(--primary);
 }
 
 .toast-msg.show {

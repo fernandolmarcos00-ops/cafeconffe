@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   modal = new bootstrap.Modal(productModal);
   loginForm.onsubmit = login;
   logout.onclick = async () => {
+    if (!confirm('Tem certeza que deseja sair?')) return;
     await db.auth.signOut();
     location.reload();
   };
