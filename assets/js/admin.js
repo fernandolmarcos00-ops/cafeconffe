@@ -41,7 +41,7 @@ async function load() {
   let r = await Promise.all([
     db.from('categories').select('*').order('sort_order'),
     db.from('products').select('*').order('sort_order'),
-    db.from('business_info').select('*').limit(1).maybeSingle()
+    db.from('business_info').select('*').order('id', { ascending: false }).limit(1).maybeSingle()
   ]);
 
   let [catsRes, productsRes, infoRes] = r;

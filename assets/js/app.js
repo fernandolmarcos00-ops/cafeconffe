@@ -19,7 +19,7 @@ async function load() {
   if (SUPABASE_URL.includes('COLE_AQUI')) return demo();
   try {
     let a = await Promise.all([
-      db.from('business_info').select('*').limit(1).maybeSingle(),
+      db.from('business_info').select('*').order('id', { ascending: false }).limit(1).maybeSingle(),
       db.from('categories').select('*').order('sort_order'),
       db.from('products').select('*').eq('available', true).order('sort_order')
     ]);
