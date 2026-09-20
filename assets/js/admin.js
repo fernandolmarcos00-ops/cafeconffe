@@ -155,11 +155,46 @@ function getCroppedBlob() {
   return new Promise(resolve => out.toBlob(resolve, 'image/jpeg', 0.9));
 }
 
+// Sai sozinho depois de um tempo sem uso, por segurança (o painel
+// fica logado indefinidamente por padrão, então isso limita o risco
+// de alguém mexer no computador com a sessão aberta).
+const IDLE_LIMIT_MS = 30 * 60 * 1000; // 30 minutos
+let idleTimer = null;
+
+function resetIdleTimer() {
+  if (!idleTimer && app.classList.contains('d-none')) return; // ainda não logou
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(async () => {
+    await db.auth.signOut();
+    sessionStorage.setItem('idleLogout', '1');
+    location.reload();
+  }, IDLE_LIMIT_MS);
+}
+
+function startIdleWatch() {
+  idleTimer = setTimeout(() => {}, 0); // marca que o watch está ativo
+  resetIdleTimer();
+  ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll'].forEach(evt => {
+    window.addEventListener(evt, resetIdleTimer, { passive: true });
+  });
+}
+
+function stopIdleWatch() {
+  clearTimeout(idleTimer);
+  idleTimer = null;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  if (sessionStorage.getItem('idleLogout')) {
+    sessionStorage.removeItem('idleLogout');
+    toast('Você foi desconectado por inatividade.', 'error');
+  }
+
   modal = new bootstrap.Modal(productModal);
   loginForm.onsubmit = login;
   logout.onclick = async () => {
     if (!confirm('Tem certeza que deseja sair?')) return;
+    stopIdleWatch();
     await db.auth.signOut();
     location.reload();
   };
@@ -187,6 +222,7 @@ async function enter(s) {
   loginScreen.classList.add('d-none');
   app.classList.remove('d-none');
   userEmail.textContent = s.user.email;
+  startIdleWatch();
   await load();
 }
 
