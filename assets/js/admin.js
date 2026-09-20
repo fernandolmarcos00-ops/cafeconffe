@@ -43,10 +43,23 @@ async function load() {
     db.from('products').select('*').order('sort_order'),
     db.from('business_info').select('*').limit(1).maybeSingle()
   ]);
-  if (r.some(x => x.error)) return alert(r.find(x => x.error).error.message);
-  cats = r[0].data || [];
-  products = r[1].data || [];
-  info = r[2].data || {};
+
+  let [catsRes, productsRes, infoRes] = r;
+  let errs = [];
+
+  if (catsRes.error) errs.push('categorias: ' + catsRes.error.message);
+  else cats = catsRes.data || [];
+
+  if (productsRes.error) errs.push('produtos: ' + productsRes.error.message);
+  else products = productsRes.data || [];
+
+  if (infoRes.error) errs.push('informações: ' + infoRes.error.message);
+  else info = infoRes.data || {};
+
+  if (errs.length) alert('Não consegui carregar tudo:\n\n' + errs.join('\n') + '\n\nVerifique as permissões (RLS/Data API) dessa(s) tabela(s) no Supabase.');
+
+  if (!info) info = {};
+
   renderCats();
   renderProducts();
   fillInfo();

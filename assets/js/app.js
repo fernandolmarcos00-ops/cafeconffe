@@ -62,7 +62,6 @@ function demo() {
 function render() {
   document.title = info.name || 'Cardápio';
   name.textContent = info.name || 'Café Conffe Cafeteria';
-  splashName.textContent = info.name || 'Café Conffe Cafeteria';
   tagline.textContent = info.tagline || '';
   title.textContent = info.main_title || 'Uma pausa para saborear';
   desc.textContent = info.description || '';
@@ -96,12 +95,59 @@ function render() {
 
 // Monta o menu de categorias e liga o clique de cada item
 function catsEl() {
-  catsElRef.innerHTML = cats.map((c, i) => `<a class="${i ? '' : 'active'}" href="#c${c.id}" data-cat="${c.id}">${esc(c.name)}</a>`).join('');
+  catsElRef.innerHTML = cats.map(c => `<a href="#c${c.id}" data-cat="${c.id}">${esc(c.name)}</a>`).join('');
 
   catsElRef.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => setActiveCat(a.dataset.cat));
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      goToCat(a.dataset.cat);
+    });
   });
 }
+
+// Rola até a categoria clicada, já marcando ela como ativa e
+// "silenciando" o observador de rolagem até a rolagem terminar
+// (evita que o menu fique trocando pelas categorias do meio do caminho)
+// Também começa "silenciado" ao carregar a página, pra nenhum item vir
+// marcado como ativo sozinho antes do usuário rolar ou clicar.
+let suppressObserver = true;
+let programmaticScroll = false;
+let suppressTimer = null;
+
+function goToCat(id) {
+  const target = document.getElementById('c' + id);
+  if (!target) return;
+
+  setActiveCat(id);
+  suppressObserver = true;
+  programmaticScroll = true;
+  clearTimeout(suppressTimer);
+
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const release = () => {
+    suppressObserver = false;
+    programmaticScroll = false;
+  };
+
+  if ('onscrollend' in window) {
+    const onEnd = () => {
+      release();
+      window.removeEventListener('scrollend', onEnd);
+    };
+    window.addEventListener('scrollend', onEnd);
+  } else {
+    // Navegadores sem suporte a "scrollend": usa um tempo de segurança
+    suppressTimer = setTimeout(release, 700);
+  }
+}
+
+// Assim que o usuário rolar a página por conta própria (mouse, toque,
+// teclado, barra de rolagem), libera o observador. Rolagens feitas pelo
+// próprio clique no menu (goToCat) não contam, pra não conflitar.
+window.addEventListener('scroll', () => {
+  if (!programmaticScroll) suppressObserver = false;
+}, { passive: true });
 
 // Marca visualmente qual categoria está selecionada no menu
 function setActiveCat(id) {
@@ -118,6 +164,7 @@ function observeCats() {
   if (!sections.length) return;
 
   catObserver = new IntersectionObserver(entries => {
+    if (suppressObserver) return;
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         setActiveCat(entry.target.id.replace('c', ''));

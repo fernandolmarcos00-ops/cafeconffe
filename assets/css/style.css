@@ -42,14 +42,9 @@ body {
 }
 
 #splash img {
-  width: 110px;
-  height: 110px;
+  width: clamp(160px, 32vw, 280px);
+  height: clamp(160px, 32vw, 280px);
   animation: pop 1.2s ease;
-}
-
-.splash-name {
-  font-size: 28px;
-  margin-top: 12px;
 }
 
 @keyframes pop {
