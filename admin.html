@@ -29,13 +29,16 @@
   <div id="app" class="d-none">
     <header>
       <div class="container-fluid admin-head">
-        <div>
-          <b>Painel do cardápio</b>
-          <small>Olá, <span id="userEmail"></span></small>
+        <div class="admin-brand">
+          <img src="assets/img/conffe-icone.svg" alt="Café Conffe">
+          <div>
+            <b>Painel do cardápio</b>
+            <small>Olá, <span id="userEmail"></span></small>
+          </div>
         </div>
-        <div>
-          <a href="index.html" target="_blank" class="btn btn-sm btn-outline-secondary">Ver cardápio</a>
-          <button id="logout" class="btn btn-sm btn-link">Sair</button>
+        <div class="admin-actions">
+          <a href="index.html" target="_blank" class="btn btn-sm btn-outline-primary">Ver cardápio</a>
+          <button id="logout" class="btn btn-sm btn-outline-primary">Sair</button>
         </div>
       </div>
     </header>
@@ -50,11 +53,8 @@
       <!-- Aba: Produtos -->
       <section id="products" class="tab active">
         <div class="heading">
-          <div>
-            <h1>Produtos</h1>
-            <p>Adicione, edite ou exclua os itens.</p>
-          </div>
-          <button id="newProduct" class="btn btn-primary">+ Novo produto</button>
+          <h1>Produtos</h1>
+          <p>Adicione, edite ou exclua os itens.</p>
         </div>
         <div id="productList"></div>
       </section>
@@ -62,10 +62,8 @@
       <!-- Aba: Categorias -->
       <section id="categories" class="tab">
         <div class="heading">
-          <div>
-            <h1>Categorias</h1>
-            <p>Crie grupos e altere a ordem.</p>
-          </div>
+          <h1>Categorias</h1>
+          <p>Crie grupos e altere a ordem.</p>
         </div>
         <div id="categoryList" class="row g-3"></div>
         <div class="card p-4 mt-4">
@@ -85,7 +83,7 @@
             </div>
             <div class="col-md-2">
               <label>Ordem</label>
-              <input id="catOrder" type="number" value="1" class="form-control">
+              <input id="catOrder" type="number" min="1" step="1" value="1" class="form-control">
             </div>
             <div class="col-12">
               <button class="btn btn-primary">+ Adicionar categoria</button>
@@ -166,7 +164,7 @@
               </div>
               <div class="col-md-4">
                 <label>Preço</label>
-                <input id="pPrice" type="number" step="0.01" class="form-control" required>
+                <input id="pPrice" type="text" inputmode="decimal" placeholder="0,00" class="form-control" required>
               </div>
               <div class="col-12">
                 <label>Descrição</label>
@@ -178,12 +176,20 @@
               </div>
               <div class="col-md-6">
                 <label>Ordem</label>
-                <input id="pOrder" type="number" value="1" class="form-control">
+                <input id="pOrder" type="number" min="1" step="1" value="1" class="form-control">
               </div>
               <div class="col-12">
                 <label>Imagem</label>
-                <input id="pImage" type="file" accept="image/*" class="form-control">
-                <img id="previewImg" class="preview d-none">
+                <input id="pImage" type="file" accept="image/*" class="form-control mb-2">
+                <div id="cropperWrap" class="cropper-wrap d-none">
+                  <canvas id="cropCanvas" width="320" height="240"></canvas>
+                  <div class="cropper-controls">
+                    <i class="bi bi-zoom-out"></i>
+                    <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" class="form-range">
+                    <i class="bi bi-zoom-in"></i>
+                  </div>
+                  <small class="text-muted">Arraste a imagem pra reposicionar e use o zoom pra afastar/aproximar.</small>
+                </div>
               </div>
               <div class="col-12">
                 <label><input id="pAvailable" type="checkbox" checked> Produto disponível</label>
